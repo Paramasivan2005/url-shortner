@@ -1,23 +1,37 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit =async (e) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
+    try {
+      const token = localStorage.getItem("resetToken");
+      const res = await axios.post("http://localhost:4000/password", {newPassword, token});
+      alert("Password updated successfully!");
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
 
-    console.log("New Password:", newPassword);
+      return res.status(400).json({
+        message: "invalid password"
+      })
+    }
 
-    // API call here
-    // axios.post("/reset-password", { newPassword });
 
-    alert("Password updated successfully!");
+    
+
+    
   };
 
   return (

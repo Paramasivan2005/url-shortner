@@ -9,38 +9,47 @@ const ForgotPassword = () => {
 
   const navigate = useNavigate();
   const handleVerifyOTP = async () => {
+    if (otp.trim() === "") {
+      alert("Enter OTP");
+      return;
+    }
+
     try {
-    const response = await axios.post(
-      "http://localhost:4000/api/verifyotp",
-      {
+      const res = await axios.post("http://localhost:4000/verify-otp", {
         email,
         otp,
-      }
-    );
+      });
 
-    alert(response.data.message);
-    navigate("/password");
+      alert(res.data.message);
+      localStorage.setItem("resetToken", res.data.resetToken);
 
-  } catch (error) {
-    alert(error.response?.data?.message || "Invalid OTP");
-  }
+      // move to reset password page
+      navigate("/password", { state: { email } });
+    } catch (error) {
+      alert(error.response?.data?.message || "Invalid OTP");
+    }
   };
 
-  const handleForgetPassword = async (e) => {
+  const handleSendOTP = async (e) => {
     e.preventDefault();
 
+    console.log("Send OTP clicked");
+    if (email.trim() === "") {
+      alert("please enter valid gmail");
+      return;
+    }
+
     try {
-    const response = await axios.post(
-      "http://localhost:4000/api/forgetpassword",
-      { email }
-    );
+      const response = await axios.post(
+        "http://localhost:4000/forget_password",
+        { email },
+      );
 
-    alert(response.data.message);
-    setShowOtp(true);
-
-  } catch (error) {
-    alert(error.response?.data?.message || "Something went wrong");
-  }
+      alert(response.data.message);
+      setShowOtp(true);
+    } catch (error) {
+      alert(error.response?.data?.message || "Error sending OTP");
+    }
   };
 
   return (
@@ -84,7 +93,7 @@ const ForgotPassword = () => {
         {/* Buttons */}
         <div className="space-y-3">
           <button
-            onClick={handleForgetPassword}
+            onClick={handleSendOTP}
             className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-lg transition"
           >
             Send OTP

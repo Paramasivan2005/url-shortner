@@ -17,6 +17,8 @@ import CreatePassword from "./pages/CreatePassword";
 
 
 const App = () => {
+
+  
   const router = createBrowserRouter(
     createRoutesFromElements (
     <Route path="/" element={<RootLayout />}>
@@ -33,6 +35,7 @@ const App = () => {
     ),
   );
   return <RouterProvider router={router} />;
+  
 };
 
 export default App;
