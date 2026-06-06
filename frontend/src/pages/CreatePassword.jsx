@@ -8,8 +8,16 @@ const ResetPassword = () => {
 
   const navigate = useNavigate();
 
+  const otpVerified = localStorage.getItem("otpVerified");
+
+    if (!otpVerified) {
+    return <Navigate to="/forgetpassword" replace />;
+  }
+
   const handleSubmit =async (e) => {
     e.preventDefault();
+
+    
 
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match!");
@@ -19,6 +27,7 @@ const ResetPassword = () => {
       const token = localStorage.getItem("resetToken");
       const res = await axios.post("http://localhost:4000/password", {newPassword, token});
       alert("Password updated successfully!");
+      localStorage.removeItem("otpVerified");
       navigate("/login");
     } catch (error) {
       console.log(error);

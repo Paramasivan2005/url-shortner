@@ -8,6 +8,10 @@ const ForgotPassword = () => {
   const [showOtp, setShowOtp] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate("/login")
+  }
   const handleVerifyOTP = async () => {
     if (otp.trim() === "") {
       alert("Enter OTP");
@@ -22,6 +26,7 @@ const ForgotPassword = () => {
 
       alert(res.data.message);
       localStorage.setItem("resetToken", res.data.resetToken);
+      localStorage.setItem("otpVerified", "true");
 
       // move to reset password page
       navigate("/password", { state: { email } });
@@ -94,14 +99,14 @@ const ForgotPassword = () => {
         <div className="space-y-3">
           <button
             onClick={handleSendOTP}
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-lg transition"
+            className="w-full cursor-pointer bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-lg transition"
           >
             Send OTP
           </button>
 
           <button
             onClick={handleVerifyOTP}
-            className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-3 rounded-lg transition"
+            className="w-full cursor-pointer bg-gray-900 hover:bg-black text-white font-semibold py-3 rounded-lg transition"
           >
             Verify OTP
           </button>
@@ -109,7 +114,7 @@ const ForgotPassword = () => {
 
         {/* Footer */}
         <div className="text-center mt-6">
-          <button className="text-sm text-blue-600 hover:underline">
+          <button onClick={handleLogin} className="text-sm cursor-pointer text-blue-600 hover:underline">
             Back to Login
           </button>
         </div>

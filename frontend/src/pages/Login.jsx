@@ -28,9 +28,10 @@ const Login = () => {
       }),
     });
     const data = await response.json();
+    console.log(data);
 
     if (!response.ok) {
-      console.log(data.message);
+      alert(data.message);
       return;
     }
 
@@ -82,7 +83,7 @@ const Login = () => {
 
             {/* Forgot password */}
             <div className="flex justify-end">
-              <a onClick={forgetpass} className="text-blue-500 text-sm hover:underline">
+              <a onClick={forgetpass} className="text-blue-500 cursor-pointer text-sm hover:underline">
                 Forgot Password?
               </a>
             </div>
@@ -90,7 +91,7 @@ const Login = () => {
             {/* Button */}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+              className="w-full cursor-pointer bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Login
             </button>

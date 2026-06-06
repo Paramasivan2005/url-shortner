@@ -7,21 +7,28 @@ import urlRoutes from "./routes/urlRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import { redirectUrl } from "./controllers/urlController.js";
 import forgetpassRoute from "./routes/forgetpassRoutes.js"
+import cloudRoute from "./routes/cloudRoute.js";
+
 
 dotenv.config();
 
 const app = express();
 const PORT = 4000;
 
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+}));
 app.use(express.json());
 
 // API Routes
 app.use("/", authRoutes);
 app.use("/", urlRoutes);
 app.use("/api", dashboardRoutes);
-app.get("/:shortCode", redirectUrl);
 app.use('/',forgetpassRoute)
+app.use('/api/user', cloudRoute)
+
+app.get("/:shortCode", redirectUrl);
 
 
 app.listen(PORT, () => {
