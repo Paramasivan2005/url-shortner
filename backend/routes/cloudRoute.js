@@ -2,6 +2,7 @@ import upload from "../cloudinary/upload.js";
 import express from "express";
 import client from "../db/db.js";
 import bcrypt from "bcryptjs";
+
 import { verifyToken } from "../middleware/authmiddleware.js";
 
 const router = express.Router();
@@ -13,9 +14,9 @@ router.post("/profile", upload.single("image"), async (req, res) => {
 
         const avatar = req.file?.path;
 
-        let hashedPassword = null; 
+        let hashedPassword = null;
 
-        if(password && password.trim() !== "") {
+        if (password && password.trim() !== "") {
             const salt = await bcrypt.genSalt(10);
             hashedPassword = await bcrypt.hash(password, salt);
         }
@@ -52,15 +53,25 @@ router.get("/profile", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const result = await client.query(`SELECT * FROM users WHERE id = $1`, [userId]);
+        const result = await client.query(
+            `SELECT id, username, email, password, avatar FROM users WHERE id = $1`,
+            [userId]
+        );
 
-        res.json(result.rows[0]);
-        console.log("AUTH HEADER:", req.headers.authorization);
-        console.log("USER:", req.user);
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
 
+        res.json({
+            user: result.rows[0],
+        });
     } catch (error) {
-        res.status(500).json({ message: "error fetching user" })
+        res.status(500).json({
+            message: "Error fetching user",
+        });
     }
-})
+});
 
 export default router;

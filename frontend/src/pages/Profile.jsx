@@ -23,7 +23,12 @@ const Profile = () => {
         },
       });
 
-      setFormData(res.data);
+      setFormData({
+        username: res.data.user.username,
+        email: res.data.user.email,
+        avatar: res.data.user.avatar,
+        password: res.data.user.password,
+      });
     };
 
     fetchUser();

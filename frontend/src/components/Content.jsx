@@ -1,32 +1,42 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Content = () => {
   const [value, setValue] = useState("");
   const [shorturl, setShorturl] = useState("");
   const [qrcode, setQrcode] = useState("");
   const [copied, setCopied] = useState(false);
-
+  const navigate = useNavigate();
   const createshortUrl = async () => {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:4000/shorten", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        original_url: value,
-      }),
-    });
-    const data = await response.json();
-    console.log(data);
 
-    setShorturl(`http://localhost:4000/${data.data.short_code}`);
-    setQrcode(data.data.qr_code);
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
-    const showTable = document.getElementById("show");
-    showTable.classList.remove("hidden");
-    showTable.classList.add("block");
+    try {
+      const response = await fetch("http://localhost:4000/shorten", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          original_url: value,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+
+      setShorturl(`http://localhost:4000/${data.data.short_code}`);
+      setQrcode(data.data.qr_code);
+      const showTable = document.getElementById("show");
+      showTable.classList.remove("hidden");
+      showTable.classList.add("block");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const downloadQR = () => {
